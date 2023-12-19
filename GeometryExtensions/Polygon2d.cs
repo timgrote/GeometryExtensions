@@ -2,202 +2,217 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Autodesk.AutoCAD.DatabaseServices;
+#if BRX_APP
+using Teigha.Geometry;
+using Teigha.DatabaseServices;
+
+#elif ACAD_APP
 using Autodesk.AutoCAD.Geometry;
+using Autodesk.AutoCAD.DatabaseServices;
+#endif
 
 namespace Gile.AutoCAD.Geometry
 {
-    /// <summary>
-    /// Describes a Polygon 2D.
-    /// </summary>
-    public class Polygon2d
-    {
-        /// <summary>
-        /// Creates a new instance of Polygon2d.
-        /// </summary>
-        /// <param name="segments">Segments sequence.</param>
-        public Polygon2d(IEnumerable<LineSegment2d> segments)
-        {
-            Segments = segments.ToArray();
-            Vertices = segments.Select(s => s.StartPoint).ToArray();
-            NumberOfVertices = Vertices.Length;
-            Initialize();
-        }
+	/// <summary>
+	/// Describes a Polygon 2D.
+	/// </summary>
+	public class Polygon2d
+	{
+		/// <summary>
+		/// Creates a new instance of Polygon2d.
+		/// </summary>
+		/// <param name="segments">Segments sequence.</param>
+		public Polygon2d(IEnumerable<LineSegment2d> segments)
+		{
+			Segments = segments.ToArray();
+			Vertices = segments.Select(s => s.StartPoint).ToArray();
+			NumberOfVertices = Vertices.Length;
+			Initialize();
+		}
 
-        /// <summary>
-        /// Creates a new instance of Polygon2d.
-        /// </summary>
-        /// <param name="vertices">Vertices sequence.</param>
-        public Polygon2d(IEnumerable<Point2d> vertices)
-        {
-            Vertices = vertices.ToArray();
-            NumberOfVertices = Vertices.Length;
-            Segments = new LineSegment2d[NumberOfVertices];
-            int i, j;
-            for (i = 0; i < NumberOfVertices; i++)
-            {
-                j = i + 1 == NumberOfVertices ? 0 : i + 1;
-                Segments[i] = new LineSegment2d(Vertices[i], Vertices[j]);
-            }
-            Initialize();
-        }
+		/// <summary>
+		/// Creates a new instance of Polygon2d.
+		/// </summary>
+		/// <param name="vertices">Vertices sequence.</param>
+		public Polygon2d(IEnumerable<Point2d> vertices)
+		{
+			Vertices = vertices.ToArray();
+			NumberOfVertices = Vertices.Length;
+			Segments = new LineSegment2d[NumberOfVertices];
+			int i, j;
+			for (i = 0; i < NumberOfVertices; i++)
+			{
+				j = i + 1 == NumberOfVertices ? 0 : i + 1;
+				Segments[i] = new LineSegment2d(Vertices[i], Vertices[j]);
+			}
 
-        /// <summary>
-        /// Get the area of the polygon.
-        /// </summary>
-        public double Area { get; private set; }
+			Initialize();
+		}
 
-        /// <summary>
-        /// Gets the centroid of the polygon.
-        /// </summary>
-        public Point2d Centroid { get; private set; }
+		/// <summary>
+		/// Get the area of the polygon.
+		/// </summary>
+		public double Area { get; private set; }
 
-        /// <summary>
-        /// Gets a value indicating if the vertices turn clockwise.
-        /// </summary>
-        public bool IsClockwise { get; private set; }
+		/// <summary>
+		/// Gets the centroid of the polygon.
+		/// </summary>
+		public Point2d Centroid { get; private set; }
 
-        /// <summary>
-        /// Gets the number of vertices.
-        /// </summary>
-        public int NumberOfVertices { get; }
+		/// <summary>
+		/// Gets a value indicating if the vertices turn clockwise.
+		/// </summary>
+		public bool IsClockwise { get; private set; }
 
-        /// <summary>
-        /// Gets the segments.
-        /// </summary>
-        public LineSegment2d[] Segments { get; }
+		/// <summary>
+		/// Gets the number of vertices.
+		/// </summary>
+		public int NumberOfVertices { get; }
 
-        /// <summary>
-        /// Gets the polygon vertices.
-        /// </summary>
-        public Point2d[] Vertices { get; }
+		/// <summary>
+		/// Gets the segments.
+		/// </summary>
+		public LineSegment2d[] Segments { get; }
 
-        /// <summary>
-        /// Evaluates if the supplied point is inside the polygon.
-        /// </summary>
-        /// <param name="point">Point to evaluate.</param>
-        /// <returns>true, if the point is inside or on the polygon; false otherwise.</returns>
-        public bool IsPointInside(Point2d point)
-        {
-            bool result = false;
-            int i, j;
-            for (i = 0, j = NumberOfVertices - 1; i < NumberOfVertices; j = i++)
-            {
-                if (point.Y < Vertices[i].Y != point.Y < Vertices[j].Y &&
-                    (point.X < (Vertices[j].X - Vertices[i].X) * (point.Y - Vertices[i].Y) / (Vertices[j].Y - Vertices[i].Y) + Vertices[i].X))
-                    result = !result;
-            }
-            return result;
-        }
+		/// <summary>
+		/// Gets the polygon vertices.
+		/// </summary>
+		public Point2d[] Vertices { get; }
 
-        /// <summary>
-        /// Try to slice the polygon with a line.
-        /// </summary>
-        /// <param name="line">Line used to slice the polygon.</param>
-        /// <param name="polygons">Polygons generated by the slicing operation.</param>
-        /// <returns>true, if the slicing operation succeeded; false, otherwise.</returns>
-        public bool TrySlice(Line2d line, out Polygon2d[] polygons)
-        {
-            polygons = new[] { this };
-            var intersections = new List<Intersection>();
-            for (int i = 0; i < Segments.Length; i++)
-            {
-                var segment = Segments[i];
-                var intersPts = segment.IntersectWith(line);
-                if (intersPts != null && !Vertices.Contains(intersPts[0]))
-                {
-                    intersections.Add(new Intersection() { Point = intersPts[0], Index = i });
-                }
-            }
+		/// <summary>
+		/// Evaluates if the supplied point is inside the polygon.
+		/// </summary>
+		/// <param name="point">Point to evaluate.</param>
+		/// <returns>true, if the point is inside or on the polygon; false otherwise.</returns>
+		public bool IsPointInside(Point2d point)
+		{
+			bool result = false;
+			int i, j;
+			for (i = 0, j = NumberOfVertices - 1; i < NumberOfVertices; j = i++)
+			{
+				if (point.Y < Vertices[i].Y != point.Y < Vertices[j].Y &&
+				    (point.X < (Vertices[j].X - Vertices[i].X) * (point.Y - Vertices[i].Y) / (Vertices[j].Y - Vertices[i].Y) +
+					    Vertices[i].X))
+					result = !result;
+			}
 
-            if (intersections.Count == 2)
-            {
-                var index0 = intersections[0].Index;
-                var index1 = intersections[1].Index;
-                polygons = new Polygon2d[2];
+			return result;
+		}
 
-                var vertices = new Point2d[index0 + 2 + NumberOfVertices - index1];
-                int i = 0;
-                for (; i < index0 + 1; i++)
-                {
-                    vertices[i] = Vertices[i];
-                }
-                vertices[i++] = intersections[0].Point;
-                vertices[i++] = intersections[1].Point;
-                for (int j = index1 + 1; j < NumberOfVertices; j++)
-                {
-                    vertices[i++] = Vertices[j];
-                }
-                polygons[0] = new Polygon2d(vertices);
+		/// <summary>
+		/// Try to slice the polygon with a line.
+		/// </summary>
+		/// <param name="line">Line used to slice the polygon.</param>
+		/// <param name="polygons">Polygons generated by the slicing operation.</param>
+		/// <returns>true, if the slicing operation succeeded; false, otherwise.</returns>
+		public bool TrySlice(Line2d line, out Polygon2d[] polygons)
+		{
+			polygons = new[] {this};
+			var intersections = new List<Intersection>();
+			for (int i = 0; i < Segments.Length; i++)
+			{
+				var segment = Segments[i];
+				var intersPts = segment.IntersectWith(line);
+				if (intersPts != null && !Vertices.Contains(intersPts[0]))
+				{
+					intersections.Add(new Intersection() {Point = intersPts[0], Index = i});
+				}
+			}
 
-                vertices = new Point2d[index1 - index0 + 2];
-                i = 0;
-                vertices[i++] = intersections[0].Point;
-                for (int j = index0 + 1; j < index1 + 1; j++)
-                {
-                    vertices[i++] = Vertices[j];
-                }
-                vertices[i] = intersections[1].Point;
-                polygons[1] = new Polygon2d(vertices);
-                return true;
-            }
-            return false;
-        }
+			if (intersections.Count == 2)
+			{
+				var index0 = intersections[0].Index;
+				var index1 = intersections[1].Index;
+				polygons = new Polygon2d[2];
 
-        /// <summary>
-        /// Converts the polygon into a closed Polyline.
-        /// </summary>
-        /// <returns>The newly created polyline.</returns>
-        public Polyline ToPolyline()
-        {
-            var pline = new Polyline();
-            for (int i = 0; i < NumberOfVertices; i++)
-            {
-                pline.AddVertexAt(i, Vertices[i], 0.0, 0.0, 0.0);
-            }
-            pline.Closed = true;
-            return pline;
-        }
+				var vertices = new Point2d[index0 + 2 + NumberOfVertices - index1];
+				int i = 0;
+				for (; i < index0 + 1; i++)
+				{
+					vertices[i] = Vertices[i];
+				}
 
-        /// <summary>
-        /// Initializes the Area, Centroid and IsClockwise properties.
-        /// </summary>
-        private void Initialize()
-        {
-            Point2d center = new Point2d();
-            Point2d triangleCenter;
-            double triangleArea;
-            double area = 0.0;
-            int last = NumberOfVertices - 1;
-            Point2d p0 = Vertices[0];
-            for (int i = 1; i < last; i++)
-            {
-                var p1 = Vertices[i];
-                var p2 = Vertices[i + 1];
-                triangleArea = (p1.X - p0.X) * (p2.Y - p0.Y) - (p2.X - p0.X) * (p1.Y - p0.Y);
-                triangleCenter = (p0 + p1.GetAsVector() + p2.GetAsVector()) / 3.0;
-                area += triangleArea;
-                center += (triangleCenter * triangleArea).GetAsVector();
-            }
-            Area = Math.Abs(area / 2.0);
-            Centroid = center.DivideBy(area);
-            IsClockwise = area < 0.0;
-        }
+				vertices[i++] = intersections[0].Point;
+				vertices[i++] = intersections[1].Point;
+				for (int j = index1 + 1; j < NumberOfVertices; j++)
+				{
+					vertices[i++] = Vertices[j];
+				}
 
-        /// <summary>
-        /// Stores the intersection data.
-        /// </summary>
-        struct Intersection
-        {
-            /// <summary>
-            /// Gets or sets the intersection point.
-            /// </summary>
-            public Point2d Point { get; set; }
+				polygons[0] = new Polygon2d(vertices);
 
-            /// <summary>
-            /// Gets or sets the index of the segment.
-            /// </summary>
-            public int Index { get; set; }
-        }
-    }
+				vertices = new Point2d[index1 - index0 + 2];
+				i = 0;
+				vertices[i++] = intersections[0].Point;
+				for (int j = index0 + 1; j < index1 + 1; j++)
+				{
+					vertices[i++] = Vertices[j];
+				}
+
+				vertices[i] = intersections[1].Point;
+				polygons[1] = new Polygon2d(vertices);
+				return true;
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Converts the polygon into a closed Polyline.
+		/// </summary>
+		/// <returns>The newly created polyline.</returns>
+		public Polyline ToPolyline()
+		{
+			var pline = new Polyline();
+			for (int i = 0; i < NumberOfVertices; i++)
+			{
+				pline.AddVertexAt(i, Vertices[i], 0.0, 0.0, 0.0);
+			}
+
+			pline.Closed = true;
+			return pline;
+		}
+
+		/// <summary>
+		/// Initializes the Area, Centroid and IsClockwise properties.
+		/// </summary>
+		private void Initialize()
+		{
+			Point2d center = new Point2d();
+			Point2d triangleCenter;
+			double triangleArea;
+			double area = 0.0;
+			int last = NumberOfVertices - 1;
+			Point2d p0 = Vertices[0];
+			for (int i = 1; i < last; i++)
+			{
+				var p1 = Vertices[i];
+				var p2 = Vertices[i + 1];
+				triangleArea = (p1.X - p0.X) * (p2.Y - p0.Y) - (p2.X - p0.X) * (p1.Y - p0.Y);
+				triangleCenter = (p0 + p1.GetAsVector() + p2.GetAsVector()) / 3.0;
+				area += triangleArea;
+				center += (triangleCenter * triangleArea).GetAsVector();
+			}
+
+			Area = Math.Abs(area / 2.0);
+			Centroid = center.DivideBy(area);
+			IsClockwise = area < 0.0;
+		}
+
+		/// <summary>
+		/// Stores the intersection data.
+		/// </summary>
+		struct Intersection
+		{
+			/// <summary>
+			/// Gets or sets the intersection point.
+			/// </summary>
+			public Point2d Point { get; set; }
+
+			/// <summary>
+			/// Gets or sets the index of the segment.
+			/// </summary>
+			public int Index { get; set; }
+		}
+	}
 }
