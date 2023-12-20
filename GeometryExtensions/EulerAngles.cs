@@ -8,7 +8,7 @@ using Teigha.Geometry;
 using Autodesk.AutoCAD.Geometry;
 #endif
 
-namespace Gile.AutoCAD.Geometry
+namespace AID.GeometryExtensions
 {
 	/// <summary>
 	/// Provides conversions between Euler angles, transformation matrix and Normal / Rotation properties.

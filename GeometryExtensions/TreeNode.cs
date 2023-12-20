@@ -1,4 +1,4 @@
-﻿namespace Gile.AutoCAD.Geometry
+﻿namespace AID.GeometryExtensions
 {
     /// <summary>
     /// Describes a generic tree node.

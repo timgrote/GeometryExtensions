@@ -8,7 +8,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using AcRx = Autodesk.AutoCAD.Runtime;
 #endif
-namespace Gile.AutoCAD.Geometry
+namespace AID.GeometryExtensions
 {
 	/// <summary>
 	/// Provides extension methods for the Spline type.

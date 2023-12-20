@@ -10,7 +10,7 @@ using Teigha.Geometry;
 using Autodesk.AutoCAD.Geometry;
 #endif
 
-namespace Gile.AutoCAD.Geometry
+namespace AID.GeometryExtensions
 {
 	/// <summary>
 	/// Provides extension methods for the Point2dCollection and IEnumerable&lt;Point2d&gt; types.

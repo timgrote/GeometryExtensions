@@ -7,7 +7,7 @@
     <ProjectGuid>{42A09595-33B7-4806-ABFF-FCBBC2BB29A8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gile.AutoCAD.Geometry</RootNamespace>
+    <RootNamespace>AID.GeometryExtensions</RootNamespace>
     <AssemblyName>GeometryExtensions</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -47,7 +47,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ARX_Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\ARX_Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;ARX_APP</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;ACAD_APP</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>7.3</LangVersion>

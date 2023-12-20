@@ -11,7 +11,7 @@ using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.DatabaseServices;
 #endif
 
-namespace Gile.AutoCAD.Geometry
+namespace AID.GeometryExtensions
 {
 	/// <summary>
 	/// Describes a PolylineSegment collection.

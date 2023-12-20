@@ -6,7 +6,7 @@ using Teigha.Geometry;
 using Autodesk.AutoCAD.Geometry;
 #endif
 
-namespace Gile.AutoCAD.Geometry
+namespace AID.GeometryExtensions
 {
 	/// <summary>
 	/// Provides methods to organize 3d points in a Kd tree structure to speed up the search of neighbours.

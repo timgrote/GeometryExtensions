@@ -7,7 +7,7 @@ using Teigha.Geometry;
 using Autodesk.AutoCAD.Geometry;
 #endif
 
-namespace Gile.AutoCAD.Geometry
+namespace AID.GeometryExtensions
 {
 	/// <summary>
 	/// Describes a triangle within the 3D space. It can be seen as a structure of three Point3d.

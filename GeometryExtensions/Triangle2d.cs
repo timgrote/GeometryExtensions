@@ -7,7 +7,7 @@ using Teigha.Geometry;
 #elif ACAD_APP
 using Autodesk.AutoCAD.Geometry;
 #endif
-namespace Gile.AutoCAD.Geometry
+namespace AID.GeometryExtensions
 {
 	/// <summary>
 	/// Describes a triangle within a plane. It can be seen as a structure of three Point2d.

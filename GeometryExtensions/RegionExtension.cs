@@ -5,14 +5,13 @@ using System.Linq;
 using Teigha.Geometry;
 using Teigha.DatabaseServices;
 using BoundRep = Teigha.BoundaryRepresentation;
-
 #elif ACAD_APP
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.BoundaryRepresentation;
+using BoundRep = Autodesk.AutoCAD.BoundaryRepresentation;
 #endif
 
-namespace Gile.AutoCAD.Geometry
+namespace AID.GeometryExtensions
 {
 	/// <summary>
 	/// Provides extension methods for the Region type.

@@ -12,7 +12,7 @@ using AcRx = Autodesk.AutoCAD.Runtime;
 #endif
 
 
-namespace Gile.AutoCAD.Geometry
+namespace AID.GeometryExtensions
 {
 	/// <summary>
 	/// Provides extension methods for the Editor type. 
