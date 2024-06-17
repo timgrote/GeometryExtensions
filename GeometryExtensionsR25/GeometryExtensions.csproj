@@ -18,9 +18,6 @@
 		<Configurations>$(Configurations)AutoCAD_Release;AutoCAD25_Release;BricsCAD_Release;</Configurations>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-		<DocumentationFile>bin\Release\GeometryExtensions.XML</DocumentationFile>
-	</PropertyGroup>
 	<PropertyGroup Condition="$(Configuration.Contains('Debug'))">
 		<DebugSymbols>true</DebugSymbols>
 		<DefineConstants>TRACE;DEBUG;TA_BOTH_DLL</DefineConstants>
@@ -49,6 +46,7 @@
 		<TargetFramework>net48</TargetFramework>
 		<OutputPath>bin\AutoCAD_Release\</OutputPath>
 		<AssemblyName>GeometryExtensionR19</AssemblyName>
+		<DocumentationFile>bin\Release\GeometryExtensionR19.XML</DocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'AutoCAD25_Debug'">
@@ -62,6 +60,7 @@
 		<TargetFramework>net8.0-windows</TargetFramework>
 		<OutputPath>bin\AutoCAD_Release\</OutputPath>
 		<AssemblyName>GeometryExtensionR25</AssemblyName>
+		<DocumentationFile>bin\Release\GeometryExtensionR25.XML</DocumentationFile>
 		<DefineConstants>$(DefineConstants); ACAD_2025</DefineConstants>
 	</PropertyGroup>
 
@@ -75,6 +74,7 @@
 		<TargetFramework>net48</TargetFramework>
 		<OutputPath>bin\BricsCAD_Release\</OutputPath>
 		<AssemblyName>GeometryExtensionBrics</AssemblyName>
+		<DocumentationFile>bin\Release\GeometryExtensionBrics.XML</DocumentationFile>
 	</PropertyGroup>
 
 	<!--<ItemGroup Condition="$(Configuration.Contains('AutoCAD'))">
