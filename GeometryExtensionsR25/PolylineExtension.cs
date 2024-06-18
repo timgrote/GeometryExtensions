@@ -375,5 +375,43 @@
         {
             return ((p2.X - p1.X) * (p3.Y - p1.Y) - (p2.Y - p1.Y) * (p3.X - p1.X)) < 1e-8;
         }
+
+        /// <summary>
+        /// Find the segment closest to the given point
+        /// </summary>
+        /// <param name="pline"></param>
+        /// <param name="point"></param>
+        /// <returns>the index of the segment closest to the given point. it actually returns
+        /// the index of the vertext before the segment</returns>
+        public static int SegmentIndexAt(this Polyline pline, Point3d point)
+        {
+            int closestVertex = 0;
+            try
+            {
+                Point3d closestPt = pline.GetClosestPointTo(point, false);
+                if (closestPt.DistanceTo(pline.EndPoint) > .001)
+                {
+                    return pline.NumberOfVertices - 1;
+                }
+                double pointDistance = pline.GetDistAtPoint(closestPt);
+                // iterate through the vertices
+                for (int i = 0; i < pline.NumberOfVertices - 1; i++)
+                {
+                    double vertexDistance = pline.GetDistanceAtParameter(i);
+                    if (vertexDistance < pointDistance)
+                    {
+                        // we haven't passed the point yet
+                        closestVertex = i;
+                    }
+                }
+            }
+            catch
+            {
+                // ignored, TODO: this exception should be handled properly by the caller instead of suppressing it 
+            }
+
+            return closestVertex;
+        }
+
     }
 }
