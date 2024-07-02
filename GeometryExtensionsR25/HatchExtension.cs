@@ -113,5 +113,41 @@ namespace Gile.AutoCAD.Geometry
             }
             return result;
         }
+
+        /// <summary>
+        /// Gets the area of the specified hatch.
+        /// </summary>
+        /// <param name="hatch">The hatch instance to which this method applies.</param>
+        /// <returns>The area of the hatch.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="hatch"/> is null.</exception>
+        public static double GetHatchArea(this Hatch hatch)
+        {
+            if (hatch == null)
+            {
+                throw new ArgumentNullException(nameof(hatch));
+            }
+
+            try
+            {
+                return hatch.Area;
+            }
+            catch
+            {
+                // If hatch.Area fails, calculate the area manually
+                return CalculateHatchAreaManually(hatch);
+            }
+        }
+
+        /// <summary>
+        /// Calculates the area of the specified hatch manually by summing the areas of its boundary curves.
+        /// </summary>
+        /// <param name="hatch">The hatch instance to which this method applies.</param>
+        /// <returns>The manually calculated area of the hatch.</returns>
+        private static double CalculateHatchAreaManually(Hatch hatch)
+        {
+            var boundaries = hatch.GetBoundary();
+            return boundaries.Sum(curve => curve.Area);
+        }
+
     }
 }
